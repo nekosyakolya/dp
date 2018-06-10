@@ -25,8 +25,7 @@ namespace textlistener
             {
                 byte[] body = ea.Body;
                 string id = Encoding.UTF8.GetString(body);
-                string key = id;
-                string text = redis.Get(key);
+                string text = redis.Get(id);
 
                 Console.WriteLine(text);
             };
