@@ -2,7 +2,6 @@ using System;
 using System.Text;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
-using System.Collections.Generic;
 
 
 namespace TextRankCalc
@@ -11,28 +10,35 @@ namespace TextRankCalc
     {
         public Receiver()
         {
-            Redis redis = new Redis();
-
-
             ConnectionFactory factory = new ConnectionFactory();
             IConnection conn = factory.CreateConnection();
             IModel channel = conn.CreateModel();
 
-            //channel.QueueDeclare("backend-api", false, false, false, null);
+            channel.ExchangeDeclare("backend-api", ExchangeType.Fanout);
+			channel.ExchangeDeclare("text-rank-tasks", ExchangeType.Direct);
 
-channel.ExchangeDeclare("backend-api", ExchangeType.Fanout);
-string queueName = channel.QueueDeclare().QueueName;
-channel.QueueBind(queueName, "backend-api", "");
+
+
+            string queueName = channel.QueueDeclare().QueueName;
+            channel.QueueBind(queueName, "backend-api", "");
 
             EventingBasicConsumer consumer = new EventingBasicConsumer(channel);
             consumer.Received += (model, ea) =>
             {
                 byte[] body = ea.Body;
-                string id = Encoding.UTF8.GetString(body);
-                string text = redis.Get(id);
-                float rank = TextRankCalculator.Get(text);
-               
-                redis.Add(new KeyValuePair<string, string>("rank:" + id, rank.ToString("0.00")));
+                string message = Encoding.UTF8.GetString(body);
+
+                var splitted = message.Split(':');
+
+
+                if (splitted.Length == 1)
+				{
+                    channel.BasicPublish(
+								exchange: "text-rank-tasks",
+								routingKey: "text-rank-task",
+								basicProperties: null,
+								body: Encoding.UTF8.GetBytes("TextRankTask:" + message));
+                }
             };
 
             channel.BasicConsume(queueName, true, consumer);

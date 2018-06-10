@@ -1,36 +1,37 @@
 using System;
 using System.Collections.Generic;
 
-namespace TextRankCalc
+namespace VowelConsCounter
 {
-    public class TextRankCalculator
+    public class VowelConsCounter
     {
 
         private static readonly HashSet<char> VOWELS = new HashSet<char>
         { 'a', 'e', 'i', 'o', 'u', 'y' 
         };
-        private static readonly HashSet<char> CONSONSNTS = new HashSet<char>
+        private static readonly HashSet<char> CONSONANTS = new HashSet<char>
         { 'b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n',
             'p', 'q', 'r', 's', 't', 'v', 'w', 'x', 'z' 
         };
 
-        static public float Get(string text)
+        static public Counters<int, int> Get(string text)
         {
-            int vowelsCount = 0;
-            int consonantsCount = 0;
+            Counters<int, int> counters = new Counters<int, int>();
+            counters.vowelsCount = 0;
+            counters.consonantsCount = 0;
 
             foreach (char ch in text)
             {
                 if (VOWELS.Contains(Char.ToLower(ch)))
                 {
-                    ++vowelsCount;
+                    ++counters.vowelsCount;
                 }
-                if (CONSONSNTS.Contains(Char.ToLower(ch)))
+                if (CONSONANTS.Contains(Char.ToLower(ch)))
                 {
-                    ++consonantsCount;
+                    ++counters.consonantsCount;
                 }
             }
-            return (consonantsCount == 0) ? (vowelsCount) : ((float)vowelsCount / consonantsCount);
+            return counters;
         }
     }
 }
