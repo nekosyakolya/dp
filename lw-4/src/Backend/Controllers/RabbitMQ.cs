@@ -13,12 +13,13 @@ namespace Backend.Controllers
             IConnection conn = factory.CreateConnection();
 
             _channel = conn.CreateModel();
-            _channel.QueueDeclare("backend-api", false, false, false, null);
+            //_channel.QueueDeclare("backend-api", false, false, false, null);
+            _channel.ExchangeDeclare("backend-api", ExchangeType.Fanout);
         }
 
         public void Add(string message)
         {
-            _channel.BasicPublish("", "backend-api", null, Encoding.UTF8.GetBytes(message));
+            _channel.BasicPublish("backend-api", "", null, Encoding.UTF8.GetBytes(message));
         }
     }
 }

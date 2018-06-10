@@ -2,13 +2,14 @@ using System;
 using System.Text;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
+using System.Collections.Generic;
 
 
-namespace textlistener
+namespace TextRankCalc
 {
-    public class TextListener
+    public class Receiver
     {
-        public TextListener()
+        public Receiver()
         {
             Redis redis = new Redis();
 
@@ -29,8 +30,9 @@ channel.QueueBind(queueName, "backend-api", "");
                 byte[] body = ea.Body;
                 string id = Encoding.UTF8.GetString(body);
                 string text = redis.Get(id);
-
-                Console.WriteLine(text);
+                float rank = TextRankCalculator.Get(text);
+               
+                redis.Add(new KeyValuePair<string, string>("rank:" + id, rank.ToString("0.00")));
             };
 
             channel.BasicConsume(queueName, true, consumer);

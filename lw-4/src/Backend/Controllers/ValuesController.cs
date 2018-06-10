@@ -4,8 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Concurrent;
-
-
+using System.Threading;
 
 namespace Backend.Controllers
 {
@@ -17,9 +16,18 @@ namespace Backend.Controllers
         RabbitMQ _rabbitMQ = new RabbitMQ();
         // GET api/values/<id>
         [HttpGet("{id}")]
-        public string Get(string id)
+        public IActionResult Get(string id)
         {
-             return _redis.Get(id);
+            for (short i = 0; i < 5; ++i)
+            {
+                string value = _redis.Get("rank:" + id);
+                if (value != null)
+                {
+                    return Ok(value);
+                }
+                Thread.Sleep(100);
+            }
+             return new NotFoundResult();
         }
 
         // POST api/values

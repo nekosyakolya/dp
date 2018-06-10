@@ -36,18 +36,39 @@ namespace Frontend.Controllers
 
             var result = await client.PostAsync("/api/values", content);
             string id = await result.Content.ReadAsStringAsync();
-            //TODO: send data in POST request to backend and read returned id value from response
-            /*
-            создаем http cliient
-            отправляем через него post запрос на localhost:5000/api/values с данными из параметра
-            результат пост запроса содержит id
-            */
-            return Ok(id);
+          
+            string newUrl = "http://localhost:5001/Home/TextDetails?=" + id;
+            return new RedirectResult(newUrl);
         }
 
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+
+        private async Task<string> GetData(string url)
+        {
+
+            HttpClient client = new HttpClient();
+            HttpResponseMessage response = await client.GetAsync(url);
+
+            string result = response.StatusCode.ToString();
+            if (response.IsSuccessStatusCode)
+            {
+                result = await response.Content.ReadAsStringAsync();
+            }
+            return result;
+
+        }
+
+        public IActionResult TextDetails(string id)
+        {
+            
+            string value = GetData("http://localhost:5000/api/values/"+ id).Result;
+
+            ViewData["Message"] = value;
+            return View();
         }
     }
 }

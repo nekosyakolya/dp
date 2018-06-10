@@ -6,7 +6,7 @@ namespace TextRankCalc
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            Receiver receiver = new Receiver();
         }
     }
 }
