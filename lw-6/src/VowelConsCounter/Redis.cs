@@ -6,21 +6,29 @@ namespace VowelConsCounter
 {
     public class Redis
     {
-        private IDatabase _database;
+        ConnectionMultiplexer _connection;
+
         public Redis()
         {
-            ConnectionMultiplexer connection = ConnectionMultiplexer.Connect("localhost");
-            _database = connection.GetDatabase();
+            _connection = ConnectionMultiplexer.Connect("localhost");
         }
 
         public string Get(string key)
         {
-            return _database.StringGet(key);
+            int hash = CalculateDatabaseId.Get(key);
+            Console.WriteLine("Database: " + hash + ", contextId: " + key);
+            IDatabase database = _connection.GetDatabase(hash);
+            return database.StringGet(key);
         }
 
         public void Add(KeyValuePair<string, string> item)
         {
-            _database.StringSet(item.Key, item.Value);
+            int hash = CalculateDatabaseId.Get(item.Key);
+
+            Console.WriteLine("Database: " + hash + ", contextId: " + item.Key);
+
+            IDatabase database = _connection.GetDatabase(hash);
+            database.StringSet(item.Key, item.Value);
 
         }
     }
