@@ -14,12 +14,19 @@ if %ERRORLEVEL% NEQ 0 (
     goto buildError
 )
 
+start /wait /d TextListener dotnet publish -c Release
+if %ERRORLEVEL% NEQ 0 (
+    goto buildError
+)
+
 md "..\%~1"\Frontend
 md "..\%~1"\Backend
 md "..\%~1"\config
+md "..\%~1"\TextListener
 
 xcopy "Frontend\bin\release\netcoreapp2.0\publish" "..\%~1"\"Frontend"
 xcopy "Backend\bin\release\netcoreapp2.0\publish" "..\%~1"\"Backend"
+xcopy "TextListener\bin\release\netcoreapp2.0\publish" "..\%~1"\"TextListener"
 
 xcopy config "..\%~1"\config
 
