@@ -41,7 +41,7 @@ namespace VowelConsRater
 				    int vowels = Int32.Parse(splitted[2]);
 					int consonants = Int32.Parse(splitted[3]);
 
-					float rank = (consonants != 0) ? (float)vowels / (float)consonants : float.MaxValue;
+					float rank = (consonants == 0) ? (vowels) : ((float)vowels / consonants);
                     redis.Add(new KeyValuePair<string, string>("rank:" + splitted[1], rank.ToString("0.00")));
 				}
             };
