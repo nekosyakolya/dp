@@ -4,23 +4,23 @@ using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 
 
-namespace TextRankCalc
+namespace TextSuccessMarker
 {
     public class Receiver
     {
         public Receiver()
         {
+            float min = 0.5f;
+
             ConnectionFactory factory = new ConnectionFactory();
             IConnection conn = factory.CreateConnection();
             IModel channel = conn.CreateModel();
 
-            channel.ExchangeDeclare("processing-limiter", ExchangeType.Fanout);
-			channel.ExchangeDeclare("text-rank-tasks", ExchangeType.Direct);
-
-
+            channel.ExchangeDeclare("text-rank-calc", ExchangeType.Fanout);
+			channel.ExchangeDeclare("text-success-marker", ExchangeType.Fanout);
 
             string queueName = channel.QueueDeclare().QueueName;
-            channel.QueueBind(queueName, "processing-limiter", "");
+            channel.QueueBind(queueName, "text-rank-calc", "");
 
             EventingBasicConsumer consumer = new EventingBasicConsumer(channel);
             consumer.Received += (model, ea) =>
@@ -31,13 +31,26 @@ namespace TextRankCalc
                 string[] items = message.Split(':');
 
 
-                if (items.Length == 3 && items[0] == "ProcessingAccepted" && items[2] == "true")
+                if (items.Length == 3 && items[0] == "TextRankCalculated")
 				{
+                    float rank = float.Parse(items[2]);
+                    string successCode = ":true";
+                    if (rank >= min)
+					{
+						Console.WriteLine("Success mark: " + items[1]);
+						
+					}
+					else
+					{
+						Console.WriteLine("Unsuccess mark: " + items[1]);
+						successCode = ":false";
+					}
+
                     channel.BasicPublish(
-								exchange: "text-rank-tasks",
-								routingKey: "text-rank-task",
+								exchange: "text-success-marker",
+								routingKey: "",
 								basicProperties: null,
-								body: Encoding.UTF8.GetBytes("TextRankTask:" + items[1]));
+								body: Encoding.UTF8.GetBytes("TextSuccessMarked:" + items[1] + successCode));
                 }
             };
 

@@ -17,10 +17,10 @@ namespace TextStatistics
             IConnection conn = factory.CreateConnection();
             IModel channel = conn.CreateModel();
 
-            channel.ExchangeDeclare("text-rank-calc", ExchangeType.Fanout);
-            channel.QueueDeclare("text-rank-calc", false, false, false, null);
+            channel.ExchangeDeclare("text-success-marker", ExchangeType.Fanout);
+            channel.QueueDeclare("text-success-marker", false, false, false, null);
             
-            channel.QueueBind("text-rank-calc", "text-rank-calc", "");
+            channel.QueueBind("text-success-marker", "text-success-marker", "");
 
             EventingBasicConsumer consumer = new EventingBasicConsumer(channel);
             consumer.Received += (model, ea) =>
@@ -35,7 +35,7 @@ namespace TextStatistics
 				}
             };
 
-            channel.BasicConsume("text-rank-calc", true, consumer);
+            channel.BasicConsume("text-success-marker", true, consumer);
 
         }
 

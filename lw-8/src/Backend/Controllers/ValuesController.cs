@@ -36,7 +36,12 @@ namespace Backend.Controllers
                 }
                 Thread.Sleep(100);
             }
-             return new NotFoundResult();
+            string status = _redis.Get("status:" + id);
+			if (status != null && status == "canNotBeProcessed")
+			{
+				return Ok("Невозможно обработать из-за достижения лимита!");
+			}
+            return new NotFoundResult();
         }
 
         // POST api/values

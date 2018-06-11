@@ -10,5 +10,8 @@ for /l %%n in (1, 1, %%j) do start "%%i" /d "%%i" dotnet %%i.dll
 )
 
 start "TextStatistics" /d TextStatistics dotnet TextStatistics.dll
+start "TextProcessingLimiter" /d TextProcessingLimiter dotnet TextProcessingLimiter.dll
+start "TextSuccessMarker" /d TextSuccessMarker dotnet TextSuccessMarker.dll
+
 
 start "" /wait "http://localhost:5001/"
