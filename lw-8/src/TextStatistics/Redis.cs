@@ -15,16 +15,28 @@ namespace TextStatistics
 
         public string Get(string key)
         {
-            Console.WriteLine("Database: " + 0 + ", contextId: " + key);
-            IDatabase database = _connection.GetDatabase();
+            int hash = CalculateDatabaseId.Get(key);
+            Console.WriteLine("Database: " + hash + ", contextId: " + key);
+            IDatabase database = _connection.GetDatabase(hash);
+            return database.StringGet(key);
+        }
+
+        public string GetStatistics()
+        {
+            string key = "statistics";
+            int hash = CalculateDatabaseId.Get(key);
+            Console.WriteLine("Database: " + hash + ", contextId: " + key);
+            IDatabase database = _connection.GetDatabase(hash);
             return database.StringGet(key);
         }
 
         public void Add(KeyValuePair<string, string> item)
         {
-            Console.WriteLine("Database: " + 0 + ", contextId: " + item.Key);
+            int hash = CalculateDatabaseId.Get(item.Key);
 
-            IDatabase database = _connection.GetDatabase();
+            Console.WriteLine("Database: " + hash + ", contextId: " + item.Key);
+
+            IDatabase database = _connection.GetDatabase(hash);
             database.StringSet(item.Key, item.Value);
 
         }

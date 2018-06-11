@@ -46,6 +46,8 @@ namespace TextSuccessMarker
 						successCode = ":false";
 					}
 
+
+                    Console.WriteLine("TextSuccessMarked:" + items[1] + successCode);
                     channel.BasicPublish(
 								exchange: "text-success-marker",
 								routingKey: "",

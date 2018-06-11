@@ -29,9 +29,12 @@ namespace TextStatistics
                 string message = Encoding.UTF8.GetString(body);
 
                 string[] items = message.Split(":");
-				if (items.Length == 3 && items[0] == "TextRankCalculated")
+                Console.WriteLine("statistics");
+
+				if (items.Length == 3 && items[0] == "TextSuccessMarked")
 				{
-					statistics.Update(float.Parse(items[2]));
+                    Console.WriteLine(items[1]);
+					statistics.Update(items[1]);
 				}
             };
 

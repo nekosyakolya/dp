@@ -21,6 +21,15 @@ namespace VowelConsCounter
             return database.StringGet(key);
         }
 
+        public string GetStatistics()
+        {
+            string key = "statistics";
+            int hash = CalculateDatabaseId.Get(key);
+            Console.WriteLine("Database: " + hash + ", contextId: " + key);
+            IDatabase database = _connection.GetDatabase(hash);
+            return database.StringGet(key);
+        }
+
         public void Add(KeyValuePair<string, string> item)
         {
             int hash = CalculateDatabaseId.Get(item.Key);

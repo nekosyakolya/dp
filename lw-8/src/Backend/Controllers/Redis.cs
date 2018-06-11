@@ -24,8 +24,9 @@ namespace Backend.Controllers
         public string GetStatistics()
         {
             string key = "statistics";
-            Console.WriteLine("Database: " + 0 + ", contextId: " + key);
-            IDatabase database = _connection.GetDatabase();
+            int hash = CalculateDatabaseId.Get(key);
+            Console.WriteLine("Database: " + hash + ", contextId: " + key);
+            IDatabase database = _connection.GetDatabase(hash);
             return database.StringGet(key);
         }
 

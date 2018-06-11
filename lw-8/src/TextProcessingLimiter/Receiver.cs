@@ -58,7 +58,7 @@ namespace TextProcessingLimiter
 					}
 					else
 					{
-						Console.WriteLine("Limit reached");
+						Console.WriteLine("Limit!");
                         successCode = ":false";
 						_redis.Add(new KeyValuePair<string, string>("status:" + items[0], "canNotBeProcessed"));
 					}
@@ -70,17 +70,10 @@ namespace TextProcessingLimiter
                         body: Encoding.UTF8.GetBytes("ProcessingAccepted:" + items[0] + successCode));
                 }
 
-                if (items.Length == 3 && items[0] == "TextSuccessMarked")
+                if (items.Length == 3 && items[0] == "TextSuccessMarked" && items[2] == "false")
 				{
-					if (items[2] == "true")
-					{
-						Console.WriteLine("Text marked as successful: " + items[1]);
-					}
-					else if (items[2] == "false")
-					{
-						Console.WriteLine("Text is unsuccessfull, rollback: " + items[1]);
-						++_availableCount;
-					}
+                    Console.WriteLine("Text is unsuccessfull, rollback: " + items[1]);
+					++_availableCount;
 				}
 
 

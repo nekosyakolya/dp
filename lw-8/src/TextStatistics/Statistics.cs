@@ -17,7 +17,7 @@ namespace TextStatistics
             _avgRank = 0.0f;
             _totalRank = 0.0f;
 
-            string value = _redis.Get("statistics");
+            string value = _redis.GetStatistics();
             if (value != null)
 			{
 				Console.WriteLine("Get statistics from database");
@@ -32,8 +32,10 @@ namespace TextStatistics
 			}
 
         }
-        public void Update(float newRank)
+        public void Update(string id)
 		{
+			float newRank = float.Parse(_redis.Get("rank:" + id));
+			Console.WriteLine("newRank: " + newRank);
             ++_textNum;
             _totalRank += newRank;
 			_avgRank = _totalRank / _textNum;
