@@ -14,6 +14,15 @@ namespace Backend.Controllers
         Redis _redis = new Redis();
 
         RabbitMQ _rabbitMQ = new RabbitMQ();
+
+        [HttpGet("statistics")]
+        public IActionResult GetStatistics()
+        { 
+            string value = _redis.GetStatistics();
+            return Ok(value);
+        }
+
+
         // GET api/values/<id>
         [HttpGet("{id}")]
         public IActionResult Get(string id)
@@ -39,5 +48,6 @@ namespace Backend.Controllers
             _rabbitMQ.Add(id);
             return id;
         }
+
     }
 }

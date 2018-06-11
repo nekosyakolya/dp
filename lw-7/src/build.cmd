@@ -32,6 +32,12 @@ start /wait /d VowelConsRater dotnet publish -c Release
 if %ERRORLEVEL% NEQ 0 (
     goto buildError
 )
+
+start /wait /d TextStatistics dotnet publish -c Release
+if %ERRORLEVEL% NEQ 0 (
+    goto buildError
+)
+
 md "..\%~1"\Frontend
 md "..\%~1"\Backend
 md "..\%~1"\config
@@ -39,6 +45,7 @@ md "..\%~1"\TextListener
 md "..\%~1"\TextRankCalc
 md "..\%~1"\VowelConsCounter
 md "..\%~1"\VowelConsRater
+md "..\%~1"\TextStatistics
 
 xcopy "Frontend\bin\release\netcoreapp2.0\publish" "..\%~1"\"Frontend"
 xcopy "Backend\bin\release\netcoreapp2.0\publish" "..\%~1"\"Backend"
@@ -46,6 +53,8 @@ xcopy "TextListener\bin\release\netcoreapp2.0\publish" "..\%~1"\"TextListener"
 xcopy "TextRankCalc\bin\release\netcoreapp2.0\publish" "..\%~1"\"TextRankCalc"
 xcopy "VowelConsCounter\bin\release\netcoreapp2.0\publish" "..\%~1"\"VowelConsCounter"
 xcopy "VowelConsRater\bin\release\netcoreapp2.0\publish" "..\%~1"\"VowelConsRater"
+xcopy "TextStatistics\bin\release\netcoreapp2.0\publish" "..\%~1"\"TextStatistics"
+
 
 xcopy config "..\%~1"\config
 

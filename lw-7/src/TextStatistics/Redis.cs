@@ -2,7 +2,7 @@ using System;
 using StackExchange.Redis;
 using System.Collections.Generic;
 
-namespace Backend.Controllers
+namespace TextStatistics
 {
     public class Redis
     {
@@ -15,15 +15,6 @@ namespace Backend.Controllers
 
         public string Get(string key)
         {
-            int hash = CalculateDatabaseId.Get(key);
-            Console.WriteLine("Database: " + hash + ", contextId: " + key);
-            IDatabase database = _connection.GetDatabase(hash);
-            return database.StringGet(key);
-        }
-
-        public string GetStatistics()
-        {
-            string key = "statistics";
             Console.WriteLine("Database: " + 0 + ", contextId: " + key);
             IDatabase database = _connection.GetDatabase();
             return database.StringGet(key);
@@ -31,11 +22,9 @@ namespace Backend.Controllers
 
         public void Add(KeyValuePair<string, string> item)
         {
-            int hash = CalculateDatabaseId.Get(item.Key);
+            Console.WriteLine("Database: " + 0 + ", contextId: " + item.Key);
 
-            Console.WriteLine("Database: " + hash + ", contextId: " + item.Key);
-
-            IDatabase database = _connection.GetDatabase(hash);
+            IDatabase database = _connection.GetDatabase();
             database.StringSet(item.Key, item.Value);
 
         }

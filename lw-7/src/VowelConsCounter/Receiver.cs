@@ -27,18 +27,18 @@ namespace VowelConsCounter
             {
                 byte[] body = ea.Body;
                 string message = Encoding.UTF8.GetString(body);
-                var splitted = message.Split(':');
+                string[] items = message.Split(':');
 
-                if (splitted.Length == 2 && splitted[0] == "TextRankTask")
+                if (items.Length == 2 && items[0] == "TextRankTask")
 				{
-                    string value = redis.Get(splitted[1]);
+                    string value = redis.Get(items[1]);
                     Counters<int, int> counters = VowelConsCounter.Get(value);
 
 					channel.BasicPublish(
 						exchange: "vowel-cons-counter",
 						routingKey: "vowel-cons-task",
 						basicProperties: null,
-						body: Encoding.UTF8.GetBytes("VowelConsCounted:" + splitted[1] + ":" + counters.vowelsCount + ":" + counters.consonantsCount));
+						body: Encoding.UTF8.GetBytes("VowelConsCounted:" + items[1] + ":" + counters.vowelsCount + ":" + counters.consonantsCount));
 				}
             };
 

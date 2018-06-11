@@ -9,5 +9,6 @@ for /f "tokens=1,2" %%i in (%file%) do (@echo %%i %%j
 for /l %%n in (1, 1, %%j) do start "%%i" /d "%%i" dotnet %%i.dll
 )
 
+start "TextStatistics" /d TextStatistics dotnet TextStatistics.dll
 
 start "" /wait "http://localhost:5001/"

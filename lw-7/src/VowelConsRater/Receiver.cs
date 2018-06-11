@@ -16,6 +16,8 @@ namespace VowelConsRater
             IModel channel = conn.CreateModel();
 
             channel.ExchangeDeclare("vowel-cons-counter", ExchangeType.Direct);
+            channel.ExchangeDeclare("text-rank-calc", ExchangeType.Fanout);
+
 
             channel.QueueDeclare(
                 queue: "rank-task",
@@ -35,15 +37,21 @@ namespace VowelConsRater
             {
                 byte[] body = ea.Body;
                 string message = Encoding.UTF8.GetString(body);
-                var splitted = message.Split(':');
-                if (splitted.Length == 4 && splitted[0] == "VowelConsCounted")
+                string[] items = message.Split(':');
+                if (items.Length == 4 && items[0] == "VowelConsCounted")
 				{
-				    int vowels = Int32.Parse(splitted[2]);
-					int consonants = Int32.Parse(splitted[3]);
+				    int vowels = Int32.Parse(items[2]);
+					int consonants = Int32.Parse(items[3]);
 
 					float rank = (consonants == 0) ? (vowels) : ((float)vowels / consonants);
-                    redis.Add(new KeyValuePair<string, string>("rank:" + splitted[1], rank.ToString("0.00")));
-				}
+                    redis.Add(new KeyValuePair<string, string>("rank:" + items[1], rank.ToString("0.00")));
+
+                    channel.BasicPublish(
+                            exchange: "text-rank-calc",
+                            routingKey: "",
+                            basicProperties: null,
+                            body: Encoding.UTF8.GetBytes("TextRankCalculated:" + items[1] + ":" + rank));
+                            }
             };
 
             channel.BasicConsume("rank-task", true, consumer);
