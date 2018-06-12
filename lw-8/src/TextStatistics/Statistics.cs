@@ -32,14 +32,14 @@ namespace TextStatistics
 			}
 
         }
-        public void Update(string id)
+        public void Update(string id, string isSucces)
 		{
 			float newRank = float.Parse(_redis.Get("rank:" + id));
 			Console.WriteLine("newRank: " + newRank);
             ++_textNum;
             _totalRank += newRank;
 			_avgRank = _totalRank / _textNum;
-            if (newRank > 0.5f)
+            if (isSucces == "true")
 			{
 				++_highRankPart;
 			}

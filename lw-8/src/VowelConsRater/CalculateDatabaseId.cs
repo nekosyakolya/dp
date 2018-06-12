@@ -11,7 +11,14 @@ namespace VowelConsRater
 			int hash = 0;
 			foreach (char ch in value)
 			{
-				hash += ch;
+				if (Char.IsDigit(ch))
+				{
+					hash += ch;
+				}
+				else 
+				{
+					hash += 1;
+				}
 			}
 			return hash % 16;
 		}

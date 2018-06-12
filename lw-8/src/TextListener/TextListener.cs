@@ -17,11 +17,9 @@ namespace textlistener
             IConnection conn = factory.CreateConnection();
             IModel channel = conn.CreateModel();
 
-            //channel.QueueDeclare("backend-api", false, false, false, null);
-
-channel.ExchangeDeclare("backend-api", ExchangeType.Fanout);
-string queueName = channel.QueueDeclare().QueueName;
-channel.QueueBind(queueName, "backend-api", "");
+            channel.ExchangeDeclare("backend-api", ExchangeType.Fanout);
+            string queueName = channel.QueueDeclare().QueueName;
+            channel.QueueBind(queueName, "backend-api", "");
 
             EventingBasicConsumer consumer = new EventingBasicConsumer(channel);
             consumer.Received += (model, ea) =>
