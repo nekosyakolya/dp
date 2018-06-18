@@ -2,7 +2,7 @@ using System;
 using System.Text;
 using RabbitMQ.Client;
 
-namespace VowelConsRater
+namespace Backend.Controllers
 {
     public class CalculateDatabaseId
     {
@@ -11,14 +11,7 @@ namespace VowelConsRater
 			int hash = 0;
 			foreach (char ch in value)
 			{
-				if (Char.IsDigit(ch))
-				{
-					hash += ch;
-				}
-				else 
-				{
-					hash += 1;
-				}
+				hash += ch;
 			}
 			return hash % 16;
 		}
